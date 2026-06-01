@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clevix - Free Classic Movies</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#0a0a0f;color:#fff;min-height:100vh}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(10,10,15,0.95);border-bottom:1px solid #2a2a3a}
+.logo{font-size:1.5rem;font-weight:900;color:#e50914;text-decoration:none;cursor:pointer}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{color:#a0a0b0;text-decoration:none;font-weight:500;cursor:pointer}
+.nav-links a:hover,.nav-links a.active{color:#fff}
+.hero{height:60vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 5% 40px;background:linear-gradient(180deg,rgba(10,10,15,0) 0%,#0a0a0f 100%),url(https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1920&q=80) center/cover;margin-top:60px}
+.hero h1{font-size:3rem;font-weight:900;margin-bottom:12px}
+.hero h1 span{color:#e50914}
+.hero p{color:#a0a0b0;max-width:600px;margin-bottom:20px;font-size:1.1rem}
+.btn{padding:12px 24px;border:none;border-radius:4px;font-weight:700;font-size:1rem;cursor:pointer;margin-right:10px}
+.btn-primary{background:#e50914;color:#fff}
+.btn-secondary{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2)}
+main{padding:30px 5%}
+.section{margin-bottom:40px}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.section-title{font-size:1.4rem;font-weight:700}
+.section-count{color:#6b6b7b;font-size:0.85rem}
+.carousel{display:flex;gap:14px;overflow-x:auto;scroll-behavior:smooth;padding-bottom:10px}
+.carousel::-webkit-scrollbar{display:none}
+.movie-card{flex:0 0 180px;cursor:pointer;transition:transform 0.2s}
+.movie-card:hover{transform:scale(1.05)}
+.movie-poster{width:180px;height:270px;border-radius:8px;overflow:hidden;position:relative;background:#1e1e2e}
+.movie-poster img{width:100%;height:100%;object-fit:cover}
+.movie-year{position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.8);color:#fff;font-size:0.7rem;font-weight:600;padding:3px 8px;border-radius:3px}
+.movie-badge{position:absolute;top:8px;right:8px;background:#f5c518;color:#000;font-size:0.65rem;font-weight:800;padding:3px 6px;border-radius:3px}
+.play-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s}
+.movie-card:hover .play-overlay{opacity:1}
+.play-btn{width:50px;height:50px;background:#e50914;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff;box-shadow:0 4px 15px rgba(229,9,20,0.5)}
+.movie-info{padding:8px 2px}
+.movie-title{font-size:0.85rem;font-weight:600;line-height:1.2;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.movie-meta{font-size:0.75rem;color:#6b6b7b}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px}
+.video-modal{position:fixed;inset:0;background:#000;z-index:1000;display:none;flex-direction:column}
+.video-modal.active{display:flex}
+.video-header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;background:linear-gradient(180deg,rgba(0,0,0,0.9) 0%,transparent 100%);position:absolute;top:0;left:0;right:0;z-index:10}
+.vlogo{font-size:1.2rem;font-weight:900;color:#e50914}
+.vclose{background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer;width:40px;height:40px;border-radius:50%;transition:background 0.2s}
+.vclose:hover{background:rgba(255,255,255,0.1)}
+.video-stage{flex:1;display:flex;align-items:center;justify-content:center;background:#000;position:relative}
+.video-stage iframe{width:100%;height:100%;border:none;position:absolute;inset:0}
+.video-details{padding:20px 5%;background:#0a0a0f;border-top:1px solid #2a2a3a}
+.video-details h2{font-size:1.3rem;margin-bottom:6px}
+.video-details p{color:#a0a0b0;font-size:0.9rem;margin-bottom:4px}
+.vdesc{color:#6b6b7b;font-size:0.85rem;margin-top:8px;line-height:1.5}
+.pills{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.pill{padding:8px 16px;background:#12121a;border:1px solid #2a2a3a;color:#a0a0b0;border-radius:20px;font-family:inherit;font-weight:600;font-size:0.85rem;cursor:pointer}
+.pill:hover,.pill.active{background:#e50914;color:#fff;border-color:#e50914}
+footer{border-top:1px solid #2a2a3a;padding:30px 5%;text-align:center;color:#6b6b7b;font-size:0.8rem}
+@media(max-width:768px){.nav-links{display:none}.hero h1{font-size:2rem}.movie-card{flex:0 0 140px}.movie-poster{width:140px;height:210px}}
+</style>
+<base target="_blank">
+</head>
+<body>
+<nav>
+<a class="logo" id="logo-btn">CLEVIX</a>
+<ul class="nav-links">
+<li><a id="nav-home" class="active">Home</a></li>
+<li><a id="nav-action">Action</a></li>
+<li><a id="nav-animation">Animation</a></li>
+<li><a id="nav-cars">Cars</a></li>
+<li><a id="nav-all">All</a></li>
+</ul>
+</nav>
+
+<div class="hero" id="hero">
+<div>
+<h1>Watch Classic Movies <span>Free</span></h1>
+<p>Legally free films from the Internet Archive. No subscription needed.</p>
+<button class="btn btn-primary" id="btn-start">Start Watching</button>
+<button class="btn btn-secondary" id="btn-browse">Browse All</button>
+</div>
+</div>
+
+<main id="mainContent">
+<div class="pills">
+<button class="pill active" data-cat="all">All</button>
+<button class="pill" data-cat="action">Action</button>
+<button class="pill" data-cat="animation">Animation</button>
+<button class="pill" data-cat="cars">Car Docs</button>
+<button class="pill" data-cat="classic">Classics</button>
+<button class="pill" data-cat="documentary">Documentary</button>
+</div>
+<div id="sections">Loading movies...</div>
+</main>
+
+<footer>
+<p>Clevix - Powered by Internet Archive</p>
+<p>All films are Public Domain or Creative Commons</p>
+</footer>
+
+<div class="video-modal" id="modal">
+<div class="video-header" id="vheader">
+<div class="vlogo">CLEVIX</div>
+<button class="vclose" id="btn-close">X</button>
+</div>
+<div class="video-stage" id="player"></div>
+<div class="video-details" id="vinfo"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
